@@ -44,6 +44,10 @@
         background-color: #999;
       }
 
+      .food {
+        background-color: #23913D;
+      }
+
     </style>
 
   </head>
@@ -78,6 +82,8 @@
               $cell.attr("class","cell snake-head");
             } else if (this.board.grid[i][j] == "B") {
               $cell.attr("class","cell snake-body");
+            } else if (this.board.grid[i][j] == "F") {
+              $cell.attr("class","cell food");
             } else {
               $cell.attr("class","cell");
             }
@@ -85,7 +91,8 @@
         }
       };
 
-      var game = new Game(80, 39);
+      var game = new Game(80, 2);
+      game.randomFood(50);
 
       $('html').keydown(function (event) {
         switch(event.keyCode) {

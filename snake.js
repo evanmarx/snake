@@ -35,6 +35,15 @@ function Snake(length, coords) {
         break;
     }
   };
+
+  this.grow = function() {
+    var last = this.positions[this.length()-1];
+    var nextLast = this.positions[this.length()-2];
+    var delta = [last[0]-nextLast[0], last[1]-nextLast[1]];
+    var tail = [last[0] + delta[0], last[1] + delta[1]];
+    this.positions.push(tail);
+  };
+
 }
 
 function Board(size) {
@@ -60,6 +69,10 @@ function Board(size) {
   };
 }
 
+function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
 function Game(size, length) {
   this.board = new Board(size);
   var mid = Math.floor(size/2);
@@ -69,10 +82,19 @@ function Game(size, length) {
     for (var i = 0; i < size; ++i) {
       for (var j = 0; j < size; ++j) {
         var content = this.board.grid[i][j];
-        if (content != "W") {
+        if (content != "W" && content !="F") {
           this.board.set([i,j], '0');
         }
       }
+    }
+  };
+
+  this.randomFood = function(amt) {
+    for (var i = 0; i < amt; i++) {
+      var randCoord = [null, null];
+      randCoord[0] = getRandomInt(1, size-2);
+      randCoord[1] = getRandomInt(1, size-2);
+      this.board.set(randCoord, "F");
     }
   };
 
@@ -90,8 +112,6 @@ function Game(size, length) {
     var headCoords = this.snake.positions[0];
     var deadPositions = this.snake.positions.slice(1).concat(this.board.walls);
 
-
-
     for (var i = 0, len = deadPositions.length; i < len; ++i) {
       if (deadPositions[i][0] == headCoords[0]
       && deadPositions[i][1] == headCoords[1]) {
@@ -102,9 +122,20 @@ function Game(size, length) {
     return false;
   };
 
+  this.snakeEating = function() {
+    var headCoords = this.snake.positions[0];
+    var foodPositions = [];
+
+    var row = headCoords[0], col = headCoords[1];
+    return this.board.grid[row][col] == "F";
+  };
+
   this.step = function() {
     this.snake.move();
     this.clearBoard();
+    if (this.snakeEating()) {
+      this.snake.grow();
+    }
     this.updateBoard();
   };
 }

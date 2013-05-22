@@ -1,5 +1,4 @@
 function Snake(length, coords) {
-  this.length = length;
   this.direction = [0, 1];
   this.positions = [];
 
@@ -7,8 +6,12 @@ function Snake(length, coords) {
     this.positions.push([coords[0], coords[1] - i]);
   }
 
+  this.length = function() {
+    return this.positions.length;
+  };
+
   this.move = function() {
-    for (var i = this.length - 1; i > 0; --i) {
+    for (var i = this.length() - 1; i > 0; --i) {
       this.positions[i][0] = this.positions[i - 1][0];
       this.positions[i][1] = this.positions[i - 1][1];
     }
@@ -77,7 +80,7 @@ function Game(size, length) {
     if(typeof keepTail == "undefined") {
       keepTail = false;
     }
-    for (var i = 0, len = this.snake.length; i < len; ++i) {
+    for (var i = 0, len = this.snake.length(); i < len; ++i) {
       var symbol = (i == 0) ? "H" : "B";
       this.board.set(this.snake.positions[i], symbol);
     }

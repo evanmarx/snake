@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Snake</title>
+    <style>
+      * {
+        border: 0;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      .board {
+        margin: 10px auto;
+        background-color: #CCC;
+        width: 800px;
+      }
+
+      ul {
+        list-style: none;
+      }
+
+      .group:after {
+        display: table;
+        content: "";
+        clear: both;
+      }
+
+      .cell {
+        float: left;
+        width: 10px;
+        height: 10px;
+      }
+
+      .snake-head {
+        background-color: orange;
+      }
+
+      .snake-body {
+        background-color: red;
+      }
+
+      .wall {
+        background-color: #999;
+      }
+
+    </style>
+
+  </head>
+  <body>
+
+    <script src="snake.js"></script>
+    <script src="jquery-1.9.1.js"></script>
+    <script>
+      $(document).ready(function(){
+        var board = "";
+        board += "<div class='board'>";
+        for(var i = 0; i < 80; i++) {
+          board += "<ul class='group'>";
+          for(var j = 0; j < 80; j++) {
+            var isWall = (i == 0) || (j == 0) || (i == 79) || (j == 79);
+            var cellType = isWall ? "cell wall" : "cell";
+            board += "<li class='" + cellType + "'></li>";
+          }
+          board += "</ul>";
+        }
+        board += "</div>";
+        $("body").append($(board));
+      });
+
+      Game.prototype.render = function() {
+        var $board = $('.board');
+        for (var i = 1; i < 79; ++i) {
+          var $row = $board.find("ul").eq(i);
+          for (var j = 1; j < 79; ++j) {
+            var $cell = $row.find(".cell").eq(j);
+            if (this.board.grid[i][j] == "H") {
+              $cell.attr("class","cell snake-head");
+            } else if (this.board.grid[i][j] == "B") {
+              $cell.attr("class","cell snake-body");
+            } else {
+              $cell.attr("class","cell");
+            }
+          }
+        }
+      };
+
+      var game = new Game(80, 39);
+
+      $('html').keydown(function (event) {
+        switch(event.keyCode) {
+          case 37:
+            game.snake.turn("west");
+            break;
+          case 38:
+            game.snake.turn("north");
+            break;
+          case 39:
+            game.snake.turn("east");
+            break;
+          case 40:
+            game.snake.turn("south");
+            break;
+        }
+      });
+
+      STEP_TIME_MILLIS = 50;
+      function run_loop() {
+        game.render();
+        game.step();
+        game.updateBoard();
+
+        if (game.snakeDead()) {
+          alert("You died!");
+        } else {
+          window.setTimeout(run_loop, STEP_TIME_MILLIS);
+        }
+      }
+
+      game.updateBoard();
+      window.setTimeout(run_loop, STEP_TIME_MILLIS);
+    </script>
+  </body>
+</html>

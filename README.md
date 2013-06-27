@@ -1,0 +1,3 @@
+* Snake
+
+JavaScript learning project.

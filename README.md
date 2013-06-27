@@ -1,3 +1,3 @@
-* Snake
+# Snake
 
 JavaScript learning project.
